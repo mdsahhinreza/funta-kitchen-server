@@ -21,10 +21,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const serviceCollection = client.db("funtaKitchen").collection("services");
+    const reviewCollection = client.db("funtaKitchen").collection("reviews");
 
     app.get("/services", async (req, res) => {
+      let dataLimit = 9999;
+      if (req.query.limit) {
+        dataLimit = parseInt(req.query.limit);
+      }
       const query = {};
-      const cursor = serviceCollection.find(query);
+      const cursor = serviceCollection.find(query).limit(dataLimit);
       const services = await cursor.toArray();
       res.send(services);
     });
@@ -34,6 +39,13 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const service = await serviceCollection.findOne(query);
       res.send(service);
+    });
+
+    app.post("/addreview", async (req, res) => {
+      const review = req.body;
+
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
     });
   } finally {
   }
