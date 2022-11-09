@@ -23,6 +23,13 @@ async function run() {
     const serviceCollection = client.db("funtaKitchen").collection("services");
     const reviewCollection = client.db("funtaKitchen").collection("reviews");
 
+    app.post("/services", async (req, res) => {
+      const service = req.body;
+
+      const result = await serviceCollection.insertOne(service);
+      res.send(result);
+    });
+
     app.get("/services", async (req, res) => {
       let dataLimit = 9999;
       if (req.query.limit) {
