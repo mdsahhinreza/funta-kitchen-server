@@ -36,7 +36,10 @@ async function run() {
         dataLimit = parseInt(req.query.limit);
       }
       const query = {};
-      const cursor = serviceCollection.find(query).limit(dataLimit);
+      const cursor = serviceCollection
+        .find(query)
+        .limit(dataLimit)
+        .sort({ timestamp: -1 });
       const services = await cursor.toArray();
       res.send(services);
     });
